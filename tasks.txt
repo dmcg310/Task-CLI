@@ -1,0 +1,7 @@
+bike
+cycle
+run
+jog
+walk
+jump
+smile
