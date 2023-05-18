@@ -13,18 +13,24 @@ fn build_task(id: u16, description: String) -> Task {
 }
 
 fn display_tasks(tasks: Vec<String>) {
+    let color_blue = "\x1B[34m";
+    let color_green = "\x1b[32m";
+    let color_default = "\x1B[0m";
+
     if tasks.len() == 0 {
-        // todo fix bug
         println!("No tasks found. Use 'cargo run a <task-description>'")
     } else {
-        println!("Task-CLI");
-        println!("-----");
+        let header = format!("{} Task-CLI {}", color_blue, color_default);
+        println!("{}", header);
+
+        let borders = format!("{} ---------- {} ", color_green, color_default);
+        println!("{}", borders);
 
         for task in tasks.iter() {
             println!("{}", task);
         }
 
-        println!("-----");
+        println!("{}", borders);
     }
 }
 
@@ -80,6 +86,35 @@ fn update_task() {
     }
 }
 
+fn delete_task() {
+    let args: Vec<String> = env::args().collect();
+    let task_id = &args[2];
+
+    let tasks = get_tasks_from_file();
+    let mut new_tasks: Vec<String> = Vec::new();
+
+    for task in tasks {
+        let mut task_id_and_description = task.split(". ");
+        let id = task_id_and_description.next().unwrap();
+
+        if id != task_id {
+            new_tasks.push(task);
+        }
+    }
+
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open("tasks.txt")
+        .expect("Unable to open file");
+
+    for task in new_tasks {
+        if let Err(err) = writeln!(file, "{}", task) {
+            eprintln!("Failed to write to file: {}", err);
+        }
+    }
+}
+
 fn file_creation() {
     let file_name = "tasks.txt";
 
@@ -109,13 +144,16 @@ fn main() {
     let tasks: Vec<String> = get_tasks_from_file();
     let args: Vec<String> = env::args().collect();
 
-    // check if user wants to add a task
     if &args.len() > &1 && &args[1] == "a" {
-        add_task()
-        // check if user wants to update a task
+        // check if user wants to add a task
+        add_task();
     } else if &args.len() > &1 && &args[1] == "u" {
-        update_task()
+        // check if user wants to update a task
+        update_task();
+    } else if &args.len() > &1 && &args[1] == "d" {
+        // check if user wants to delete a task
+        delete_task();
     } else {
-        display_tasks(tasks)
+        display_tasks(tasks);
     }
 }
