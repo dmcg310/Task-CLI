@@ -1,7 +1,2 @@
-bike
-cycle
-run
-jog
-walk
-jump
-smile
+1. hello there how are you
+2. bye bye
