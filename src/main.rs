@@ -2,13 +2,41 @@ use std::env;
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::io::{BufRead, BufReader};
+use uuid::Uuid;
 
 struct Task {
-    id: u16,
+    id: String,
     description: String,
 }
 
-fn build_task(id: u16, description: String) -> Task {
+fn generate_uuid() -> String {
+    let tasks = get_tasks_from_file();
+
+    let uuid = Uuid::new_v4();
+    let mut digits_only = String::new();
+
+    for c in uuid.to_string().chars() {
+        if c.is_digit(10) {
+            digits_only.push(c);
+            if digits_only.len() == 3 {
+                break;
+            }
+        }
+    }
+
+    // check if any current uuids are the same as the generated one
+    for task in tasks {
+        let mut task_id_and_description = task.split(". ");
+        let id = task_id_and_description.next().unwrap();
+        if id == digits_only {
+            generate_uuid();
+            break;
+        }
+    }
+
+    digits_only
+}
+fn build_task(id: String, description: String) -> Task {
     Task { id, description }
 }
 
@@ -36,8 +64,7 @@ fn display_tasks(tasks: Vec<String>) {
 
 fn add_task() {
     let args: Vec<String> = env::args().collect();
-    let tasks: Vec<String> = get_tasks_from_file();
-    let id = tasks.len() as u16 + 1;
+    let id = generate_uuid();
     let description = &args[2..].join(" ");
 
     let task: Task = build_task(id, String::from(description));
