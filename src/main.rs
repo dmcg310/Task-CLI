@@ -41,7 +41,7 @@ fn display_tasks(tasks: Vec<String>) {
     let color_default = "\x1B[0m";
 
     if tasks.len() == 0 {
-        println!("No tasks found. Use 'cargo run a <task-description>'")
+        println!("No tasks found. Use 'tcli a <task-description>'")
     } else {
         let header = format!("{} Task-CLI {}", color_blue, color_default);
         println!("{}", header);
@@ -64,7 +64,7 @@ fn add_task(args: Vec<String>) {
     let task: Task = build_task(id, String::from(description));
     let mut file = OpenOptions::new()
         .append(true)
-        .open("tasks.txt")
+        .open("/home/dmcg310/tasks.txt")
         .expect("Unable to open file");
 
     if let Err(err) = writeln!(file, "{}. {}", task.id, task.description) {
@@ -96,7 +96,7 @@ fn update_task(args: Vec<String>) {
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
-        .open("tasks.txt")
+        .open("/home/dmcg310/tasks.txt")
         .expect("Unable to open file");
 
     for task in new_tasks {
@@ -127,7 +127,7 @@ fn delete_task(args: Vec<String>) {
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
-        .open("tasks.txt")
+        .open("/home/dmcg310/tasks.txt")
         .expect("Unable to open file");
 
     for task in new_tasks {
@@ -136,12 +136,11 @@ fn delete_task(args: Vec<String>) {
         }
     }
 
-    let updated_tasks = get_tasks_from_file();
-    display_tasks(updated_tasks);
+    println!("Task deleted!");
 }
 
 fn file_creation() {
-    let file_name = "tasks.txt";
+    let file_name = "/home/dmcg310/tasks.txt";
 
     if std::path::Path::new(&file_name).exists() {
         return;
@@ -156,7 +155,7 @@ fn file_creation() {
 }
 
 fn get_tasks_from_file() -> Vec<String> {
-    let file = File::open("tasks.txt").expect("File not found.");
+    let file = File::open("/home/dmcg310/tasks.txt").expect("File not found.");
     let buf = BufReader::new(file);
     buf.lines()
         .map(|x| x.expect("Could not parse line."))
