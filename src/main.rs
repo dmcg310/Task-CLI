@@ -4,6 +4,8 @@ use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::io::{BufRead, BufReader};
 
+const FILE_NAME: &str = "/home/dmcg310/tasks.txt";
+
 struct Task {
     id: u32,
     description: String,
@@ -14,7 +16,7 @@ fn generate_id() -> u32 {
 
     let mut rng = rand::thread_rng();
     loop {
-        let new_id: u32 = rng.gen_range(0..=100);
+        let new_id: u32 = rng.gen_range(10..=99);
 
         // check if any current IDs are the same as the generated one
         if !tasks.iter().any(|task| {
@@ -64,7 +66,7 @@ fn add_task(args: Vec<String>) {
     let task: Task = build_task(id, String::from(description));
     let mut file = OpenOptions::new()
         .append(true)
-        .open("/home/dmcg310/tasks.txt")
+        .open(FILE_NAME)
         .expect("Unable to open file");
 
     if let Err(err) = writeln!(file, "{}. {}", task.id, task.description) {
@@ -96,7 +98,7 @@ fn update_task(args: Vec<String>) {
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
-        .open("/home/dmcg310/tasks.txt")
+        .open(FILE_NAME)
         .expect("Unable to open file");
 
     for task in new_tasks {
@@ -127,7 +129,7 @@ fn delete_task(args: Vec<String>) {
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
-        .open("/home/dmcg310/tasks.txt")
+        .open(FILE_NAME)
         .expect("Unable to open file");
 
     for task in new_tasks {
@@ -140,12 +142,10 @@ fn delete_task(args: Vec<String>) {
 }
 
 fn file_creation() {
-    let file_name = "/home/dmcg310/tasks.txt";
-
-    if std::path::Path::new(&file_name).exists() {
+    if std::path::Path::new(&FILE_NAME).exists() {
         return;
     } else {
-        match File::create(&file_name) {
+        match File::create(&FILE_NAME) {
             Ok(_file) => {
                 return;
             }
@@ -155,7 +155,7 @@ fn file_creation() {
 }
 
 fn get_tasks_from_file() -> Vec<String> {
-    let file = File::open("/home/dmcg310/tasks.txt").expect("File not found.");
+    let file = File::open(FILE_NAME).expect("File not found.");
     let buf = BufReader::new(file);
     buf.lines()
         .map(|x| x.expect("Could not parse line."))
