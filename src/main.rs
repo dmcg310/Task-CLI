@@ -1,42 +1,37 @@
+use rand::Rng;
 use std::env;
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::io::{BufRead, BufReader};
-use uuid::Uuid;
 
 struct Task {
-    id: String,
+    id: u32,
     description: String,
 }
 
-fn generate_uuid() -> String {
+fn generate_id() -> u32 {
     let tasks = get_tasks_from_file();
 
-    let uuid = Uuid::new_v4();
-    let mut digits_only = String::new();
+    let mut rng = rand::thread_rng();
+    loop {
+        let new_id: u32 = rng.gen_range(0..=100);
 
-    for c in uuid.to_string().chars() {
-        if c.is_digit(10) {
-            digits_only.push(c);
-            if digits_only.len() == 3 {
-                break;
-            }
+        // check if any current IDs are the same as the generated one
+        if !tasks.iter().any(|task| {
+            let mut task_id_and_description = task.split(". ");
+            let id = task_id_and_description
+                .next()
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+            id == new_id
+        }) {
+            return new_id;
         }
     }
-
-    // check if any current uuids are the same as the generated one
-    for task in tasks {
-        let mut task_id_and_description = task.split(". ");
-        let id = task_id_and_description.next().unwrap();
-        if id == digits_only {
-            generate_uuid();
-            break;
-        }
-    }
-
-    digits_only
 }
-fn build_task(id: String, description: String) -> Task {
+
+fn build_task(id: u32, description: String) -> Task {
     Task { id, description }
 }
 
@@ -62,10 +57,9 @@ fn display_tasks(tasks: Vec<String>) {
     }
 }
 
-fn add_task() {
-    let args: Vec<String> = env::args().collect();
-    let id = generate_uuid();
+fn add_task(args: Vec<String>) {
     let description = &args[2..].join(" ");
+    let id = generate_id();
 
     let task: Task = build_task(id, String::from(description));
     let mut file = OpenOptions::new()
@@ -81,8 +75,7 @@ fn add_task() {
     }
 }
 
-fn update_task() {
-    let args: Vec<String> = env::args().collect();
+fn update_task(args: Vec<String>) {
     let task_id = &args[2];
     let new_description = &args[3..].join(" ");
     let tasks = get_tasks_from_file();
@@ -111,10 +104,12 @@ fn update_task() {
             eprintln!("Failed to write to file: {}", err);
         }
     }
+
+    let updated_tasks = get_tasks_from_file();
+    display_tasks(updated_tasks);
 }
 
-fn delete_task() {
-    let args: Vec<String> = env::args().collect();
+fn delete_task(args: Vec<String>) {
     let task_id = &args[2];
 
     let tasks = get_tasks_from_file();
@@ -140,6 +135,9 @@ fn delete_task() {
             eprintln!("Failed to write to file: {}", err);
         }
     }
+
+    let updated_tasks = get_tasks_from_file();
+    display_tasks(updated_tasks);
 }
 
 fn file_creation() {
@@ -168,19 +166,40 @@ fn get_tasks_from_file() -> Vec<String> {
 fn main() {
     file_creation();
 
-    let tasks: Vec<String> = get_tasks_from_file();
+    let tasks = get_tasks_from_file();
     let args: Vec<String> = env::args().collect();
 
-    if &args.len() > &1 && &args[1] == "a" {
-        // check if user wants to add a task
-        add_task();
-    } else if &args.len() > &1 && &args[1] == "u" {
-        // check if user wants to update a task
-        update_task();
-    } else if &args.len() > &1 && &args[1] == "d" {
-        // check if user wants to delete a task
-        delete_task();
+    if args.len() > 1 {
+        match args[1].as_str() {
+            "a" => {
+                if args.len() < 3 {
+                    println!("Please provide a task description.");
+                }
+                add_task(args);
+            }
+            "u" => {
+                if args.len() < 4 {
+                    println!("Please provide a task ID and a new description.");
+                }
+                update_task(args);
+            }
+            "d" => {
+                if args.len() < 3 {
+                    println!("Please provide a task ID to delete.");
+                }
+                delete_task(args);
+            }
+            _ => {
+                println!(
+                    "Invalid command.
+                         \nUse 'a <task-description>' to add a task.
+                         \n'u <task-id> <task-description>' to update a task.
+                         \n'd <task-id>' to delete a task."
+                );
+                return;
+            }
+        }
     } else {
-        display_tasks(tasks);
+        display_tasks(tasks)
     }
 }
