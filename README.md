@@ -14,7 +14,7 @@
 
 ## Prerequisites
 
-- Rust (Make sure you have Rust installed on your system. You can download it from the official Rust website: [https://www.rust-lang.org/](https://www.rust-lang.org/)
+- Rust. Make sure you have Rust installed on your system. You can download it from the official Rust website: [https://www.rust-lang.org/](https://www.rust-lang.org/)
 
 ## Installation (Linux)
 
