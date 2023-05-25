@@ -4,6 +4,11 @@ use prettytable::{color, Attr, Cell, Row, Table};
 pub fn display_tasks() {
     let tasks: Vec<String> = file::get_tasks_from_file();
 
+    if tasks.len() == 0 {
+        println!("No tasks. Run `tcli a <list-name> <list-description>` to add a task.");
+        return;
+    }
+
     let mut table = Table::new();
     table.add_row(Row::new(vec![
         Cell::new("ID")
@@ -37,6 +42,10 @@ pub fn display_tasks() {
 
 pub fn display_tasks_list(args: Vec<String>) {
     let tasks: Vec<String> = file::get_tasks_from_file();
+    if args.len() < 3 {
+        return;
+    }
+
     let list = &args[2];
 
     let mut list_tasks = vec![];

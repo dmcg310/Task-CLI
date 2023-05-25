@@ -47,9 +47,11 @@ fn main() {
             _ => {
                 println!(
                     "Invalid command.
+                         \nRun 'tcli' to display all tasks.
                          \n'a <list-name> <task-description>' to add a task.
                          \n'u <task-id> <task-description>' to update a task.
-                         \n'd <task-id>' to delete a task."
+                         \n'd <task-id>' to delete a task.
+                         \n'l <list-name>' to display tasks in a list."
                 );
                 return;
             }

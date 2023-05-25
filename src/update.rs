@@ -11,17 +11,16 @@ pub fn update_task(args: Vec<String>) {
     let mut new_tasks: Vec<String> = Vec::new();
 
     for task in tasks {
-        // example taskid. description. list
         let task = task.split(". ").collect::<Vec<&str>>();
         let id = task[0];
         let description = task[1];
         let list = task[2];
 
         if id == task_id {
-            let new_task = format!("{}. {}. {}\n", id, new_description, list);
+            let new_task = format!("{}. {}. {}", id, new_description, list);
             new_tasks.push(new_task);
         } else {
-            let new_task = format!("{}. {}. {}\n", id, description, list);
+            let new_task = format!("{}. {}. {}", id, description, list);
             new_tasks.push(new_task);
         }
     }
