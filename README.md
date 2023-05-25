@@ -1,5 +1,7 @@
 # Task-CLI
 
+![tcli 1](https://github.com/dmcg310/Task-CLI/assets/120114728/b128aa3d-9d25-4691-a706-32c860940a3f)
+
 **Task-CLI** is a command-line interface (CLI) application written in Rust that helps you stay organized and manage your tasks efficiently. It provides a simple and intuitive way to create, update, and delete tasks directly from the command line.
 
 ## Features
@@ -10,6 +12,8 @@
 - Create multiple lists of tasks to seperate your tasks into different categories.
 - View all tasks in a well-formatted and easy-to-read layout.
 - Fast and lightweight, ensuring quick task management.
+
+![tcli 2](https://github.com/dmcg310/Task-CLI/assets/120114728/e62c8178-1be5-4a20-8e28-864fcd6c9732)
 
 ## Prerequisites
 
