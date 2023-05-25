@@ -49,6 +49,15 @@ pub fn display_tasks_list(args: Vec<String>) {
     let list = &args[2];
 
     let mut list_tasks = vec![];
+
+    if tasks.len() == 0 {
+        println!(
+            "No tasks in list `{}`. Run `tcli a <list-name> <list-description>` to add a task.",
+            list
+        );
+        return;
+    }
+
     for task in tasks {
         let task_arr = task.split(". ").collect::<Vec<&str>>();
         let list_name = task_arr[2];
@@ -56,13 +65,6 @@ pub fn display_tasks_list(args: Vec<String>) {
         if list_name == list {
             list_tasks.push(task);
         }
-    }
-    if list_tasks.len() == 0 {
-        println!(
-            "No tasks in list `{}`. Run `tcli a <list-name> <list-description>` to add a task.",
-            list
-        );
-        return;
     }
 
     let mut table = Table::new();

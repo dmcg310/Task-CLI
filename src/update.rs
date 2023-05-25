@@ -17,10 +17,10 @@ pub fn update_task(args: Vec<String>) {
         let list = task[2];
 
         if id == task_id {
-            let new_task = format!("{}. {}. {}", id, new_description, list);
+            let new_task = format!("{}. {}. {}\n", id, new_description, list);
             new_tasks.push(new_task);
         } else {
-            let new_task = format!("{}. {}. {}", id, description, list);
+            let new_task = format!("{}. {}. {}\n", id, description, list);
             new_tasks.push(new_task);
         }
     }

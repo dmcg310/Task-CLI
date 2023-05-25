@@ -45,7 +45,7 @@ pub fn add_task() -> Vec<String> {
         .open(config_dir().unwrap().join("tcli.txt"))
         .expect("Unable to open file");
 
-    let new_task = format!("{}. {}. {}", task.id, task.description, task.list);
+    let new_task = format!("{}. {}. {}\n", task.id, task.description, task.list);
     file.write_all(new_task.as_bytes())
         .expect("Unable to write to file");
 
