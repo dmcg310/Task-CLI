@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 dirs = "5.0.1"
 rand = "0.8.5"
+prettytable-rs = "^0.10"

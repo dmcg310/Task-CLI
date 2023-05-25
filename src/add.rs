@@ -33,7 +33,8 @@ pub fn build_task(id: u32, description: String, list: String) -> Task {
     }
 }
 
-pub fn add_task(args: Vec<String>) -> Vec<String> {
+pub fn add_task() -> Vec<String> {
+    let args = std::env::args().collect::<Vec<String>>();
     let list = &args[2];
     let description = &args[3..].join(" ");
     let id = generate_id();
